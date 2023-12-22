@@ -1,271 +1,73 @@
-Medication plan:
+## Medication Plan:
 
-  
-
+### Endpoint:
+```json
 POST patient={patientId}/medicationPlanId={medicationPlanId}
 
-medication: '',
-
-dosage: '',
-
-instructions: '',
-
-scheduleTimes: \[''\], // ex. '15:00:00','17:00:00',
-
-endsAt: {
-
-date: '2024-11-10',
-
-  indefinte: false,
-
+{
+  "medication": "",
+  "dosage": "",
+  "instructions": "",
+  "scheduleTimes": ["15:00:00", "17:00:00"],
+  "endsAt": {
+    "date": "2024-11-10",
+    "indefinite": false
+  }
 }
+```
 
+# Backend endsAt Handler:
+Check if any medication plans have ended before providing to the endpoint by checking the endsAt date or indefinite. indefinite should be false as default.
   
+# Endpoints:
+GET `/patient={patientId}/medicationPlan/Date={dateOfShowcase}`
 
-Backend endsAt handler:
+Example Output:
+```json
+[
+  {
+    "scheduleTime": "6:00:00",
+    "administeredBy": {
+      "id": "...",
+      // ...
+    },
+    "medication": {
+      "name": "",
+      "dosage": ""
+    }
+  },
+  {
+    "scheduleTime": "6:00:00",
+    "administeredBy": {
+      "id": "...",
+      // ...
+    },
+    "medication": {
+      "name": "",
+      "dosage": ""
+    }
+  },
+  // ...
+]
+```
 
-Check if any medication plans has ended before providing to the endpoint by checking the endsAt date or indefinte:
 
-  
-
-Indefinte should be false as default.
-
-  
-
-GET /patient={patientId}/medicationPlan/Date={dateOfShowcase}:
-
-  
+GET `/patient={patientId}/medicationPlan/Date={dateOfShowcase}`:
 
 example output: 
 
-\[
-
-// scheduleDate:2023/12/22,
-
-scheduleTime: 6:00:00,
-
- administeredBy: {
-
- id,
-
- ...
-
- }
-
-  medication {
-
-    name,
-
-    dosage,
-
-  }
-
-\],
-
-\[
-
-// scheduleDate:2023/12/22, 
-
-scheduleTime: 6:00:00,
-
-administeredBy: {
-
-id,
-
- ...
-
- }
-
-  medication {
-
-    name,
-
-    dosage,
-
-  }
-
-\]
-
-...
-
-  
-
-}
-
-  
-
-If dateOfShowcase \> endsAt.date || indefinte = true:
-
-{
-
-  endsAt: yesterday
-
-}
-
-Do not return the medication in the showcase list:
-
-  
-
-For example:
-
-We would like to showcase for:
-
-/2023/12/22: 
-
-endsAt: {
-
-date: '2023/12/11',
-
-  indefinte: false,
-
-}
-
-, we do not return
-
-  
-
-  
-
-if endsAt: {
-
-date: '2023/12/30',
-
-  indefinte: false,
-
-}
-
-return this medication in the dateOfShowCase
-
-  
-
-Medication list:
-
-  
-
-/patient={patientId}/medicationPlan/Date={dateOfShowcase}
-
-{
-
-\[
-
-medicationId,
-
-  scheduleTimes,
-
-  dosage,
-
-  description,
-
-  administered: true/false,
-
-\]
-
-}
-
-  
-
-// For the future plans: If we'd like to display the following for a specific section in the hospital, such as a bed group:
-
-/hospitalGroup={hospitalGroupId}/medicationPlan/Date={dateOfShowcase}
-
-{
-
-\[
-
-medicationId,
-
-  scheduleTimes,
-
-  dosage,
-
-  description,
-
-\]
-
-}
-
-  
-
-  
-
-  
-
-DB:
-
-patient\_table:::
-
-id pk: 
-
-first\_name: 
-
-last\_name:
-
-bed\_number:
-
-  
-
-user\_table:::
-
-id pk:
-
-first\_name:
-
-last\_name:
-
-role(s):
-
-  
-
-medication\_schedule\_table
-
-id pk:
-
-patientId sk:
-
-medicationId sk:
-
-dosage: 
-
-instruction:
-
-start\_at: (created at)
-
-ends\_at:
-
-indefinte: false,
-
-alternative: JSON
-
-  
-
-medication\_schedule\_times\_table
-
-id pk
-
-medicationScheduleId
-
-time: number
-
-  
-
-medication\_table:
-
-id pk:
-
-name:
-
-  
-
-medication\_administration:
-
-id pk: 
-
-administered\_date\_time:
-
-medication\_schedule\_times\_id fk: 
-
-administered\_by\_user\_id fk:
-
+```json
+[
+  {
+    "medicationId",
+    "scheduleTimes",
+    "dosage",
+    "description",
+    "administered": true/false
+  },
+  ...
+]
+```
 
 ```sql
 SELECT TOP (1000) [id]
