@@ -69,6 +69,62 @@ example output: 
 ]
 ```
 
+## DB
+
+```mermaid
+erDiagram
+
+     "dbo.patient_table" {
+        id int
+        first_name varchar(255)
+        last_name varchar(255)
+        bed_number int
+    }
+
+     "dbo.user_table" {
+        id int
+        first_name varchar(255)
+        last_name varchar(255)
+        role varchar(255)
+    }
+
+     "dbo.medication_table" {
+        id int
+        name varchar(255)
+    }
+
+     "dbo.medication_schedule_table" {
+        id int
+        patient_id int
+        medication_id int
+        dosage varchar(255)
+        instructions varchar(255)
+        starts_at date
+        ends_at date
+        alternative nvarchar(-1)
+    }
+
+     "dbo.medication_schedule_times_table" {
+        id int
+        medication_schedule_id int
+        time time
+    }
+
+     "dbo.medication_administration" {
+        id int
+        administered_date_time datetime
+        medication_schedule_times_id int
+        administered_by_user_id int
+    }
+
+ "dbo.medication_schedule_table" ||--o{ "dbo.patient_table" : "id"
+"dbo.medication_schedule_table" ||--o{ "dbo.medication_table" : "id"
+"dbo.medication_schedule_table" ||--o{ "dbo.medication_schedule_times_table" : "medication_schedule_id"
+"dbo.medication_administration" ||--o{ "dbo.medication_schedule_times_table" : "id"
+"dbo.medication_administration" ||--o{ "dbo.user_table" : "id"
+
+```
+
 ```sql
 SELECT TOP (1000) [id]
       ,[first_name]
